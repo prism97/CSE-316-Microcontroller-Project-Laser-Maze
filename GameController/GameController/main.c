@@ -32,7 +32,7 @@
 
 
 int life = 9;
-int score = 0;
+int score = 1000;
 
 uint16_t adc_output = 0;
 float actual_voltage = 0;
@@ -121,6 +121,10 @@ int main(void)
 				LCD_Clear();
 				LCD_GoToLine(0);
 				LCD_Printf("Game Over");
+				_delay_ms(500);
+				LCD_Clear();
+				LCD_GoToLine(0);
+				LCD_Printf("score: %d", score);
 				LCD_GoToLine(1);
 				LCD_Printf("time: %2x:%2x",(uint16_t)rtc.min,(uint16_t)rtc.sec);
 				break;
@@ -150,6 +154,7 @@ int main(void)
 				{
 					//object crossed laser
 					life--;
+					score -= 50;
 					if(life == 0) 
 					{
 						break;
@@ -164,6 +169,10 @@ int main(void)
 				LCD_Clear();
 				LCD_GoToLine(0);
 				LCD_Printf("Game Over");
+				_delay_ms(500);
+				LCD_Clear();
+				LCD_GoToLine(0);
+				LCD_Printf("score: %d", score);
 				LCD_GoToLine(1);
 				LCD_Printf("time: %2x:%2x",(uint16_t)rtc.min,(uint16_t)rtc.sec);
 				break;
@@ -173,7 +182,10 @@ int main(void)
 			
 			LCD_Clear();
 			LCD_GoToLine(0);
-			LCD_Printf(arr);
+			//LCD_Printf(arr);
+			LCD_Printf("life: %d", life);
+			LCD_GoToLine(1);
+			LCD_Printf("score: %d", score);
 			
 		}
 		_delay_ms(100);
