@@ -109,11 +109,53 @@ int main(void)
 		}
 		else if(start == 1)
 		{
+			adc_init();
+			/*Reading analog ir sensor value*/
+			analog_ir_sensor_value=read_adc_channel(2);
+			analog_ir_sensor_value = analog_ir_sensor_value/256;
+			
+			if(analog_ir_sensor_value < 2)
+			{
+				//object detected at end point
+				RTC_GetDateTime(&rtc);
+				LCD_Clear();
+				LCD_GoToLine(0);
+				LCD_Printf("Game Over");
+				LCD_GoToLine(1);
+				LCD_Printf("time: %2x:%2x",(uint16_t)rtc.min,(uint16_t)rtc.sec);
+				break;
+			}
+			
+			ADCSRA = 0x00;
+			ADMUX = 0x00;
+			
 			if(wait == 10)
 			{
 				wait = 0;
 				currentOff = (currentOff + 1) % 5;
 				PORTB = output[currentOff];
+			}
+			
+			for(int i = 0; i < 5; i++)
+			{
+				ADCSRA = 0b10000111;
+				ADMUX = admux[i];
+				
+				ADCSRA |= (1 << ADSC);
+				while (ADCSRA & (1 << ADSC));
+				adc_output = (ADC >> 6);
+				actual_voltage = 1.0 * adc_output / 256;
+				
+				if((actual_voltage > 2) && (i != currentOff))
+				{
+					//object crossed laser
+					life--;
+					if(life == 0) 
+					{
+						break;
+					}
+					arr[7] = life + '0';
+				}
 			}
 			
 			if(life == 0)
@@ -127,22 +169,6 @@ int main(void)
 				break;
 			}
 			
-			for(int i = 0; i < 5; i++)
-			{
-				ADMUX = admux[i];
-				ADCSRA = 0b10000111;
-				ADCSRA |= (1 << ADSC);
-				while (ADCSRA & (1 << ADSC));
-				adc_output = (ADC >> 6);
-				actual_voltage = 1.0 * adc_output / 256;
-				
-				if((actual_voltage > 2) && (i != currentOff))
-				{
-					//object crossed laser
-					life--;
-					arr[7] = life + '0';
-				}
-			}
 			wait++;
 			
 			LCD_Clear();
