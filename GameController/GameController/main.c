@@ -25,6 +25,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include <stdlib.h>
 #include <string.h>
 #include "lcd.h"
@@ -38,7 +39,8 @@ uint16_t adc_output = 0;
 float actual_voltage = 0;
 int currentOff;
 int wait;
-
+int start = 0;
+int analog_ir_sensor_value;
 
 
 int output[5] = {
@@ -63,16 +65,31 @@ void adc_init();
 void RTC_values();
 int read_adc_channel(unsigned char channel);
 
+
+ISR(INT2_vect)
+{
+	score -= 100;
+	_delay_ms(50);
+}
+
+
+
 int main(void)
 {
-	DDRB = 0xFF;
-	PORTB = 0xFF;
+	DDRB = 0b11111000;
+	PORTB = 0b11111000;
 	
 	RTC_values();
 	
 	LCD_SetUp(PC_6,P_NC,PC_7,P_NC,P_NC,P_NC,P_NC,PD_4,PD_5,PD_6,PD_7);
 	LCD_Init(2,16);
 	RTC_Init();
+	
+	
+	GICR = (1 << INT2);
+	MCUCSR |= (1 << ISC2);
+	
+	sei();
 	
 	//ADMUX = 0b01100000;
 	//ADCSRA = 0b10000111;
@@ -83,8 +100,6 @@ int main(void)
 	arr[7] = life + '0';
 	arr[8] = '\0';
 	
-	int analog_ir_sensor_value;
-	int start = 0;
 	
 	/* Replace with your application code */
 	while (1)
@@ -93,7 +108,7 @@ int main(void)
 		{
 			adc_init();
 			/*Reading analog ir sensor value*/
-			analog_ir_sensor_value=read_adc_channel(1);
+			analog_ir_sensor_value=read_adc_channel(0);
 			analog_ir_sensor_value = analog_ir_sensor_value/256;
 			
 			if(analog_ir_sensor_value < 2)
@@ -138,6 +153,7 @@ int main(void)
 				wait = 0;
 				currentOff = (currentOff + 1) % 5;
 				PORTB = output[currentOff];
+				_delay_ms(25);
 			}
 			
 			for(int i = 0; i < 5; i++)
@@ -161,6 +177,7 @@ int main(void)
 					}
 					arr[7] = life + '0';
 				}
+				_delay_ms(25);
 			}
 			
 			if(life == 0)

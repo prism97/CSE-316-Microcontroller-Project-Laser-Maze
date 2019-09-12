@@ -109,7 +109,8 @@ int main(void) {
 				timeCheck++;
 				if(timeCheck >= 5)
 				{
-					USART_TxChar('0');
+					USART_TxChar('1');
+					timeCheck = 0;
 					//PORTB = 0x00;
 				}
 			}
@@ -117,14 +118,14 @@ int main(void) {
 			{
 				still = 1;
 				timeCheck = 0;
-				USART_TxChar('1');
+				USART_TxChar('0');
 				//PORTB = 0xFF;
 			}
 		}
 		else
 		{
 			still = 0;
-			USART_TxChar('1');
+			USART_TxChar('0');
 			//PORTB = 0xFF;	
 		}
 		
