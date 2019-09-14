@@ -89,7 +89,7 @@ int main(void)
 	GICR = (1 << INT2);
 	MCUCSR |= (1 << ISC2);
 	
-	sei();
+	//sei();
 	
 	//ADMUX = 0b01100000;
 	//ADCSRA = 0b10000111;
@@ -116,6 +116,7 @@ int main(void)
 				//object detected
 				start = 1;
 				RTC_SetDateTime(&rtc);
+				sei();
 				//ADCSRA = 0b10000111;
 			}
 			LCD_Clear();
@@ -153,7 +154,7 @@ int main(void)
 				wait = 0;
 				currentOff = (currentOff + 1) % 5;
 				PORTB = output[currentOff];
-				_delay_ms(25);
+				_delay_ms(10);
 			}
 			
 			for(int i = 0; i < 5; i++)
@@ -177,7 +178,6 @@ int main(void)
 					}
 					arr[7] = life + '0';
 				}
-				_delay_ms(25);
 			}
 			
 			if(life == 0)
@@ -199,7 +199,6 @@ int main(void)
 			
 			LCD_Clear();
 			LCD_GoToLine(0);
-			//LCD_Printf(arr);
 			LCD_Printf("life: %d", life);
 			LCD_GoToLine(1);
 			LCD_Printf("score: %d", score);

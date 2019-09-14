@@ -273,7 +273,7 @@ int main(void) {
 	int timeCheck = 0;
  180:	81 2c       	mov	r8, r1
  182:	91 2c       	mov	r9, r1
-				//PORTB = 0xFF;
+				USART_TxChar('0');
 			}
 		}
 		else
@@ -367,8 +367,8 @@ int main(void) {
  21e:	2f ef       	ldi	r18, 0xFF	; 255
  220:	82 1a       	sub	r8, r18
  222:	92 0a       	sbc	r9, r18
-				if(timeCheck >= 5)
- 224:	85 e0       	ldi	r24, 0x05	; 5
+				if(timeCheck >= 10)
+ 224:	8a e0       	ldi	r24, 0x0A	; 10
  226:	88 16       	cp	r8, r24
  228:	91 04       	cpc	r9, r1
  22a:	a4 f0       	brlt	.+40     	; 0x254 <main+0x170>
@@ -388,7 +388,7 @@ int main(void) {
 				USART_TxChar('0');
  238:	80 e3       	ldi	r24, 0x30	; 48
  23a:	0e 94 b3 04 	call	0x966	; 0x966 <USART_TxChar>
-					//PORTB = 0x00;
+					timeCheck = 0;
 				}
 			}
 			else 
@@ -406,10 +406,10 @@ int main(void) {
 		else
 		{
 			still = 0;
-			USART_TxChar('0');
+			USART_TxChar('0');	
  24a:	80 e3       	ldi	r24, 0x30	; 48
  24c:	0e 94 b3 04 	call	0x966	; 0x966 <USART_TxChar>
-				//PORTB = 0xFF;
+				USART_TxChar('0');
 			}
 		}
 		else
