@@ -32,7 +32,7 @@
 #include "rtc.h"
 
 
-int life = 9;
+int life = 5;
 int score = 1000;
 
 uint16_t adc_output = 0;
@@ -76,7 +76,7 @@ ISR(INT2_vect)
 
 int main(void)
 {
-	DDRB = 0b11111000;
+	DDRB = 0b11111010;
 	PORTB = 0b11111000;
 	
 	RTC_values();
@@ -89,16 +89,8 @@ int main(void)
 	GICR = (1 << INT2);
 	MCUCSR |= (1 << ISC2);
 	
-	//sei();
-	
-	//ADMUX = 0b01100000;
-	//ADCSRA = 0b10000111;
 	currentOff = 4;
 	wait = 0;
-	char arr[9];
-	strcpy(arr, "Life : ");
-	arr[7] = life + '0';
-	arr[8] = '\0';
 	
 	
 	/* Replace with your application code */
@@ -113,15 +105,16 @@ int main(void)
 			
 			if(analog_ir_sensor_value < 2)
 			{
-				//object detected
+				//object detected at start point
 				start = 1;
 				RTC_SetDateTime(&rtc);
 				sei();
-				//ADCSRA = 0b10000111;
+				continue;
 			}
 			LCD_Clear();
 			LCD_GoToLine(0);
-			LCD_Printf("Start");
+			LCD_Printf("LASER MAZE");
+			_delay_ms(10);
 		}
 		else if(start == 1)
 		{
@@ -133,11 +126,14 @@ int main(void)
 			if(analog_ir_sensor_value < 2)
 			{
 				//object detected at end point
+				score += 500;
 				RTC_GetDateTime(&rtc);
+				
 				LCD_Clear();
 				LCD_GoToLine(0);
 				LCD_Printf("Game Over");
-				_delay_ms(500);
+				PORTB = 0x00;
+				_delay_ms(200);
 				LCD_Clear();
 				LCD_GoToLine(0);
 				LCD_Printf("score: %d", score);
@@ -148,6 +144,7 @@ int main(void)
 			
 			ADCSRA = 0x00;
 			ADMUX = 0x00;
+			PORTB = PORTB & 0xFD;
 			
 			if(wait == 10)
 			{
@@ -172,11 +169,11 @@ int main(void)
 					//object crossed laser
 					life--;
 					score -= 50;
+					PORTB = PORTB | 0x02;
 					if(life == 0) 
 					{
 						break;
 					}
-					arr[7] = life + '0';
 				}
 			}
 			
@@ -186,7 +183,8 @@ int main(void)
 				LCD_Clear();
 				LCD_GoToLine(0);
 				LCD_Printf("Game Over");
-				_delay_ms(500);
+				PORTB = 0x00;
+				_delay_ms(200);
 				LCD_Clear();
 				LCD_GoToLine(0);
 				LCD_Printf("score: %d", score);
@@ -196,16 +194,14 @@ int main(void)
 			}
 			
 			wait++;
-			
+			score -= 10;
 			LCD_Clear();
 			LCD_GoToLine(0);
 			LCD_Printf("life: %d", life);
 			LCD_GoToLine(1);
 			LCD_Printf("score: %d", score);
-			
+			_delay_ms(100);
 		}
-		_delay_ms(100);
-		
 	}
 	return 0;
 }
