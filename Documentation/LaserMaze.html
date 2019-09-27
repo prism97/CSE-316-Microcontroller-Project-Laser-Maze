@@ -79,7 +79,9 @@
 		<h2 id="desc">A Brief Description</h2>
 		<hr>
 		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
+			In this project, we have designed a physical maze to simulate laser based games/security systems. <br>
+			<br>
+			The player needs to reach the end of the maze avoiding laser beams as much as possible. Time taken to solve the maze also affects the score of the player. There's also an extra restriction - the player cannot stay still for too long, waiting for a certain laser to turn off. 
 		</p>
 	</div>
 
@@ -100,7 +102,7 @@
 			</ul>
 			<li>6 DOF Accelerometer Gyroscope GY-521</li>
 			<li>Real Time Clock (RTC)</li>
-			<li>LCD Display</li>
+			<li>16x2 LCD Display</li>
 		</ul>
 	</div>
 
@@ -211,6 +213,16 @@
 	<div>
 		<h2 id="pin">Detailed Pin Diagram</h2>
 		<hr>
+
+		<div style="margin: 3em; text-align: center;">
+			<figure>
+				<div style="display: inline-block; margin: 0; border: 10px solid bisque;">
+					<img src="Diagrams/JPEGs/ControllerPinDiagram.jpg" style="border: 20px solid white;">
+				</div>
+				<figcaption>Fig 2. Pin Diagram for mother ATmega32</figcaption>
+			</figure>
+		</div>
+
 		<div style="margin: 3em; text-align: center;">
 			<figure>
 				<div style="display: inline-block; margin: 0; border: 10px solid bisque;">
@@ -235,13 +247,16 @@
 		<hr>
 		<ol>
 			<li>
-				We had problems getting the bluetooth module to work. Despite being properly powered, the modules were not getting paired at first. We later solved this issue by changing the fuse bit settings of sender(player) and receiver ATmega32s from 0x99E4 to 0x99E1.
+				We had problems getting the bluetooth module to work. Despite being properly powered, the modules were not getting paired at first. We later solved this issue by changing the fuse bit settings of sender(player) and receiver ATmegas from 0x99E4 to 0x99E1.
 			</li>
 			<li>
 				Detecting laser cuts from a single Laser-LDR pair was easy. However, we had to do this for all (5) Laser-LDR pairs in our maze so that no laser cut could go undetected at any point of time. For this, we had to make proper and timely use of the ADC ports connected to the LDRs.
 			</li>
 			<li>
-				We couldn't make the main controller ATmega32 work properly with 0x99E1 fuse bits - ADC volatge calculatons occurred too fast to detect laser cuts. We also didn't have enough ports available to accomodate the bluetooth receiver. So we interfaced the receiver using another ATmega32 with 0x99E1 fuse bits and kept the main one at 0x99E4.
+				We couldn't make the main ATmega work properly with 0x99E1 fuse bits - ADC volatge calculatons occurred too fast to detect laser cuts. We also didn't have enough ports available to accomodate the bluetooth receiver. So we interfaced the receiver using another ATmega with 0x99E1 fuse bits and kept the main one at 0x99E4.
+			</li>
+			<li>
+				We also had an issue with the interrupt sent from the receiver ATmega to the main ATmega. The interrupt was getting activated twice every time. This problem was solved after rewiring the grounds.
 			</li>
 		</ol>
 	</div>
