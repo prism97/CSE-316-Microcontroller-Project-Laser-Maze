@@ -28,13 +28,11 @@ int main(void)
 		Data_in = USART_RxChar();						/* receive data from Bluetooth device*/
 		if(Data_in =='1')
 		{
-			PORTB = 0xFF;
-			//LED |= (1<<PB0);							/* Turn ON LED */	
+			PORTB = 0xFF;	
 		}
 		else if(Data_in =='0')
 		{
 			PORTB = 0x00;
-			//LED &= ~(1<<PB0);							/* Turn OFF LED */
 		}
 		_delay_ms(50);
 	}		

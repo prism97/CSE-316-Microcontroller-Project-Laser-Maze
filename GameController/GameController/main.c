@@ -64,6 +64,7 @@ rtc_t rtc;
 void adc_init();
 void RTC_values();
 int read_adc_channel(unsigned char channel);
+void display_results();
 
 
 ISR(INT2_vect)
@@ -77,7 +78,7 @@ ISR(INT2_vect)
 int main(void)
 {
 	DDRB = 0b11111010;
-	PORTB = 0b11111000;
+	PORTB = 0x00;
 	
 	RTC_values();
 	
@@ -107,6 +108,7 @@ int main(void)
 			{
 				//object detected at start point
 				start = 1;
+				PORTB = 0b11111000;
 				RTC_SetDateTime(&rtc);
 				sei();
 				continue;
@@ -127,18 +129,7 @@ int main(void)
 			{
 				//object detected at end point
 				score += 500;
-				RTC_GetDateTime(&rtc);
-				
-				LCD_Clear();
-				LCD_GoToLine(0);
-				LCD_Printf("Game Over");
-				PORTB = 0x00;
-				_delay_ms(200);
-				LCD_Clear();
-				LCD_GoToLine(0);
-				LCD_Printf("score: %d", score);
-				LCD_GoToLine(1);
-				LCD_Printf("time: %2x:%2x",(uint16_t)rtc.min,(uint16_t)rtc.sec);
+				display_results();
 				break;
 			}
 			
@@ -179,17 +170,7 @@ int main(void)
 			
 			if(life == 0)
 			{
-				RTC_GetDateTime(&rtc);
-				LCD_Clear();
-				LCD_GoToLine(0);
-				LCD_Printf("Game Over");
-				PORTB = 0x00;
-				_delay_ms(200);
-				LCD_Clear();
-				LCD_GoToLine(0);
-				LCD_Printf("score: %d", score);
-				LCD_GoToLine(1);
-				LCD_Printf("time: %2x:%2x",(uint16_t)rtc.min,(uint16_t)rtc.sec);
+				display_results();
 				break;
 			}
 			
@@ -208,14 +189,15 @@ int main(void)
 
 void RTC_values()
 {
-	rtc.hour = 0x00; //  10:40:20 am
+	rtc.hour = 0x00; 
 	rtc.min =  0x00;
 	rtc.sec =  0x00;
 
-	rtc.date = 0x01; //1st Jan 2016
+	//random date
+	rtc.date = 0x01; //1st Jan 2019
 	rtc.month = 0x01;
-	rtc.year = 0x16;
-	rtc.weekDay = 5; // Friday: 5th day of week considering monday as first day.
+	rtc.year = 0x19;
+	rtc.weekDay = 2; // Tuesday: 2nd day of week considering Monday as first day.
 }
 
 /*ADC Function Definitions*/
@@ -224,6 +206,7 @@ void adc_init(void)
 	ADCSRA=(1<<ADEN)|(1<<ADSC)|(1<<ADATE)|(1<<ADPS2);
 	SFIOR=0x00;
 }
+
 int read_adc_channel(unsigned char channel)
 {
 	int adc_value;
@@ -234,4 +217,19 @@ int read_adc_channel(unsigned char channel)
 	adc_value=ADCH;
 	adc_value=(adc_value<<8)|temp;
 	return adc_value;
+}
+
+void display_results()
+{
+	RTC_GetDateTime(&rtc);
+	LCD_Clear();
+	LCD_GoToLine(0);
+	LCD_Printf("Game Over");
+	PORTB = 0x00;
+	_delay_ms(200);
+	LCD_Clear();
+	LCD_GoToLine(0);
+	LCD_Printf("score: %d", score);
+	LCD_GoToLine(1);
+	LCD_Printf("time: %2x:%2x",(uint16_t)rtc.min,(uint16_t)rtc.sec);
 }

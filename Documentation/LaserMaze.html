@@ -48,6 +48,10 @@
 			color: firebrick;
 		}
 
+		p {
+			margin: 0.5em 0;
+		}
+
 	</style>
 
 
@@ -82,49 +86,164 @@
 	<div>
 		<h2 id="req">Required Equipments</h2>
 		<hr>
-		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
-		</p>
+		<ul>
+			<li>ATmega32 Microcontroller</li>
+			<li>5mW Laser Module Emitter - Red cross</li>
+			<li>Light Dependent Resistor (LDR) 5mm</li>
+			<ul style="list-style-type: circle;">
+				<li>10Kohm Resistor (for interfacing)</li>
+			</ul>
+			<li>IR Obstacle Sensor</li>
+			<li>HC-05 Bluetooth Pair Module</li>
+			<ul style="list-style-type: circle;">
+				<li>Arduino (for 3.3V power supply)</li>
+			</ul>
+			<li>6 DOF Accelerometer Gyroscope GY-521</li>
+			<li>Real Time Clock (RTC)</li>
+			<li>LCD Display</li>
+		</ul>
 	</div>
 
 	<div>
 		<h2 id="how">How It Works?</h2>
 		<hr>
 		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
+			Three ATmega32 microcontrollers have been used in this project :
 		</p>
+		<ul>
+			<li>
+				<b>Mother/Controller ATmega32</b>
+				<p style="text-indent: 4em;">
+					Most of the peripherals are connected to this ATmega. The start and end IR sensors detect the player object at the start and end points of the maze respectively. Two ADC channels are used for these two sensors. When the player object crosses start point, this ATmega enables the RTC to keep track of time. The laser modules, controlled by this ATmega, get turned off one by one following a certain time schedule. At any point of time in the game, only one of the laser beams remains turned off. Five ADC channels are used for the five LDRs to detect laser cuts from the five corresponding laser modules. The main ATmega handles the score and life of the player object and constantly displays them on the LCD. Also, it can receive interrupt signals from the receiver ATmega and penalize the player accordingly.
+				</p>
+			</li>
+			<li>
+				<b>Player ATmega32</b>
+				<p style="text-indent: 4em;">
+					This ATmega is interfaced with the bluetooth sender module and the gyroscope. We bundled it up with an arduino and a mini power bank to ensure constant power supply and flexible movement across the maze. The movement of the object in all three axes (x,y,z) is measured constantly using the gyroscope. If the change in movement is negligible for a certain amount of time, a signal is sent through the bluetooth module to notify that the player object has been still for too long.
+				</p>
+			</li>
+			<li>
+				<b>Receiver ATmega32</b>
+				<p style="text-indent: 4em;">
+					Only the bluetooth receiver module is interfaced with this ATmega. It simply receives signals from the player ATmega and forwards it to the main ATmega by generating an external interrupt.
+				</p>
+			</li>
+		</ul>
 	</div>
 
 	<div>
 		<h2 id="block">Block Diagram</h2>
 		<hr>
-		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
-		</p>
+		<div style="margin: 0; text-align: center;">
+			<figure>
+				<div style="display: inline-block; margin: 0; border: 10px solid bisque;">
+					<img src="Diagrams/JPEGs/BlockDiagram-LaserMaze.jpg" style="border: 20px solid white;">
+				</div>
+				<figcaption>Fig 1. Block Diagram</figcaption>
+			</figure>
+		</div>
 	</div>
 	
 	<div>
 		<h2 id="algo">Algorithm</h2>
 		<hr>
 		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
+			<span>1. START</span><br>
+			<p style="padding-left: 2em;">	
+				2. Start IR sensor waits for object
+			</p>	
+			<p style="padding-left: 4em;">
+				3. If object is detected at start point	
+			</p>
+			<p style="padding-left: 6em;">
+				4. Start the game with 5 lives & an initial score of 1000 <br>
+				5. Start RTC <br>
+				6. Turn on all the lasers <br>
+				7. Enable global interrupt system <br>
+				8. While the game is ongoing 
+			</p>
+			<p style="padding-left: 8em;">
+				9. Deduct 100 from current score if interrupted (INT2) <br>
+				10. Check if End IR sensor detects object
+			</p>
+			<p style="padding-left: 10em;">
+				11. If object is detected at end point
+			</p>
+			<p style="padding-left: 12em;">
+				12. Add 500 to current score <br>
+				13. Stop RTC <br>
+				14. Turn off all the lasers <br>
+				15. Display time and score on LCD <br>
+				16. Go to (30)
+			</p>
+			<p style="padding-left: 8em;">
+				17. If the given time duration has passed 
+			</p>
+			<p style="padding-left: 10em;">
+				18. Turn on the laser that is currently off <br>
+				19. Turn off the next laser
+			</p>
+			<p style="padding-left: 8em;">
+				20. Check all the LDRs for laser cuts
+			</p>
+			<p style="padding-left: 10em;">
+				21. If a laser cut is detected
+			</p>
+			<p style="padding-left: 12em;">
+				22. Deduct 50 from current score <br>
+				23. Deduct a life <br>
+				24. If there are no lives left
+			</p>
+			<p style="padding-left: 14em;">
+				25. Go to (13)
+			</p>
+			<p style="padding-left: 8em;">
+				26. Deduct 10 from current score <br>
+				27. Display current life and score on LCD <br>
+				28. Give a very short delay <br>
+				29. Go to (8)
+			</p>
+			<span>30. END</span>
 		</p>
 	</div>
 
 	<div>
 		<h2 id="pin">Detailed Pin Diagram</h2>
 		<hr>
-		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
-		</p>
+		<div style="margin: 3em; text-align: center;">
+			<figure>
+				<div style="display: inline-block; margin: 0; border: 10px solid bisque;">
+					<img src="Diagrams/JPEGs/PlayerPinDiagram.jpg" style="border: 20px solid white;">
+				</div>
+				<figcaption>Fig 3. Pin Diagram for player ATmega32</figcaption>
+			</figure>
+		</div>
+
+		<div style="margin: 3em; text-align: center;">
+			<figure>
+				<div style="display: inline-block; margin: 0; border: 10px solid bisque;">
+					<img src="Diagrams/JPEGs/ReceiverPinDiagram.jpg" style="border: 20px solid white;">
+				</div>
+				<figcaption>Fig 4. Pin Diagram for receiver ATmega32</figcaption>
+			</figure>
+		</div>
 	</div>
 
 	<div>
 		<h2 id="prob">Problems Faced</h2>
 		<hr>
-		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
-		</p>
+		<ol>
+			<li>
+				We had problems getting the bluetooth module to work. Despite being properly powered, the modules were not getting paired at first. We later solved this issue by changing the fuse bit settings of sender(player) and receiver ATmega32s from 0x99E4 to 0x99E1.
+			</li>
+			<li>
+				Detecting laser cuts from a single Laser-LDR pair was easy. However, we had to do this for all (5) Laser-LDR pairs in our maze so that no laser cut could go undetected at any point of time. For this, we had to make proper and timely use of the ADC ports connected to the LDRs.
+			</li>
+			<li>
+				We couldn't make the main controller ATmega32 work properly with 0x99E1 fuse bits - ADC volatge calculatons occurred too fast to detect laser cuts. We also didn't have enough ports available to accomodate the bluetooth receiver. So we interfaced the receiver using another ATmega32 with 0x99E1 fuse bits and kept the main one at 0x99E4.
+			</li>
+		</ol>
 	</div>
 
 	<div>
@@ -141,9 +260,10 @@
 	<div>
 		<h2 id="teachers">Course Teachers</h2>
 		<hr>
-		<p>
-			In this project, we have designed a physical maze to simulate laser based games/security systems.
-		</p>
+		<ol>
+			<li>Md. Tareq Mahmood</li>
+			<li>Masum Mushfiq</li>
+		</ol>
 	</div>
 
 	<a href="#head">Back to top</a>
