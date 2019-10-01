@@ -797,15 +797,15 @@ END GROUP
  .debug_abbrev  0x00000970      0x248 main.o
  .debug_abbrev  0x00000bb8       0xe6 rtc.o
 
-.debug_line     0x00000000     0x12ae
+.debug_line     0x00000000     0x12ac
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x115 G:/Atmel Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega32/avr5/crtatmega32.o
  .debug_line    0x00000115      0x127 delay.o
  .debug_line    0x0000023c      0x1f1 gpio.o
  .debug_line    0x0000042d      0x141 i2c.o
  .debug_line    0x0000056e      0x81f lcd.o
- .debug_line    0x00000d8d      0x3e1 main.o
- .debug_line    0x0000116e      0x140 rtc.o
+ .debug_line    0x00000d8d      0x3df main.o
+ .debug_line    0x0000116c      0x140 rtc.o
 
 .debug_frame    0x00000000      0x53c
  *(.debug_frame)

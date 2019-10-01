@@ -10,25 +10,23 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include "USART_RS232_H_file.h"		/* include USART library */
+#include "USART_RS232_H_file.h"		//include USART library 
 
-//#define LED PORTB					/* connected LED on PORT pin */
 
 int main(void)
 {
 	char Data_in;
-    DDRB = 0xFF;							/* make PORT as output port */
+    DDRB = 0xFF;		//make PORT as output port 
 	PORTB = 0x00;
-	USART_Init(9600);						/* initialize USART with 9600 baud rate */
-	//LED = 0;
+	USART_Init(9600);	//initialize USART with 9600 baud rate 
 	
 	while(1)
 	{
 		PORTB = 0x00;
-		Data_in = USART_RxChar();						/* receive data from Bluetooth device*/
-		if(Data_in =='1')
+		Data_in = USART_RxChar();	//receive data from BlueTooth device
+		if(Data_in =='1')	//object still for too long
 		{
-			PORTB = 0xFF;	
+			PORTB = 0xFF;	//send signal for interrupt
 		}
 		else if(Data_in =='0')
 		{

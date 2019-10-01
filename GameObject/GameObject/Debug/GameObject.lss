@@ -19,15 +19,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 00000bd5  00000000  00000000  00002a01  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000f08  00000000  00000000  000035d6  2**0
+  8 .debug_line   00000e7d  00000000  00000000  000035d6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000558  00000000  00000000  000044e0  2**2
+  9 .debug_frame  00000558  00000000  00000000  00004454  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000755  00000000  00000000  00004a38  2**0
+ 10 .debug_str    0000070c  00000000  00000000  000049ac  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00001885  00000000  00000000  0000518d  2**0
+ 11 .debug_loc    00001885  00000000  00000000  000050b8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000180  00000000  00000000  00006a12  2**0
+ 12 .debug_ranges 00000180  00000000  00000000  0000693d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -134,6 +134,9 @@ uint32_t getElapsedTime() {
 
 000000e4 <main>:
 
+//*****useful if you want to use the gyro's timer*****//
+
+
 int main(void) {
   e4:	cf 93       	push	r28
   e6:	df 93       	push	r29
@@ -145,8 +148,6 @@ int main(void) {
   f2:	de bf       	out	0x3e, r29	; 62
   f4:	0f be       	out	0x3f, r0	; 63
   f6:	cd bf       	out	0x3d, r28	; 61
-    
-    
     
     DDRA = 0xFF;
   f8:	8f ef       	ldi	r24, 0xFF	; 255
@@ -160,73 +161,70 @@ int main(void) {
     PORTB = 0xFF;
  102:	88 bb       	out	0x18, r24	; 24
 
+
 	#if MPU6050_GETATTITUDE == 0
-    //int16_t velx = 0;
-    //int16_t vely = 0;
-    //int16_t velz = 0;
-    int16_t ax = 0;
+		int16_t ax = 0;
  104:	1a 82       	std	Y+2, r1	; 0x02
  106:	19 82       	std	Y+1, r1	; 0x01
-    int16_t ay = 0;
+		int16_t ay = 0;
  108:	1c 82       	std	Y+4, r1	; 0x04
  10a:	1b 82       	std	Y+3, r1	; 0x03
-    int16_t az = 0;
+		int16_t az = 0;
  10c:	1e 82       	std	Y+6, r1	; 0x06
  10e:	1d 82       	std	Y+5, r1	; 0x05
-    int16_t gx = 0;
+		int16_t gx = 0;
  110:	18 86       	std	Y+8, r1	; 0x08
  112:	1f 82       	std	Y+7, r1	; 0x07
-    int16_t gy = 0;
+		int16_t gy = 0;
  114:	1a 86       	std	Y+10, r1	; 0x0a
  116:	19 86       	std	Y+9, r1	; 0x09
-    int16_t gz = 0;
+		int16_t gz = 0;
  118:	1c 86       	std	Y+12, r1	; 0x0c
  11a:	1b 86       	std	Y+11, r1	; 0x0b
-    double axg = 0;
+		double axg = 0;
  11c:	1d 86       	std	Y+13, r1	; 0x0d
  11e:	1e 86       	std	Y+14, r1	; 0x0e
  120:	1f 86       	std	Y+15, r1	; 0x0f
  122:	18 8a       	std	Y+16, r1	; 0x10
-    double ayg = 0;
+		double ayg = 0;
  124:	19 8a       	std	Y+17, r1	; 0x11
  126:	1a 8a       	std	Y+18, r1	; 0x12
  128:	1b 8a       	std	Y+19, r1	; 0x13
  12a:	1c 8a       	std	Y+20, r1	; 0x14
-    double azg = 0;
+		double azg = 0;
  12c:	1d 8a       	std	Y+21, r1	; 0x15
  12e:	1e 8a       	std	Y+22, r1	; 0x16
  130:	1f 8a       	std	Y+23, r1	; 0x17
  132:	18 8e       	std	Y+24, r1	; 0x18
-    double gxds = 0;
+		double gxds = 0;
  134:	19 8e       	std	Y+25, r1	; 0x19
  136:	1a 8e       	std	Y+26, r1	; 0x1a
  138:	1b 8e       	std	Y+27, r1	; 0x1b
  13a:	1c 8e       	std	Y+28, r1	; 0x1c
-    double gyds = 0;
+		double gyds = 0;
  13c:	1d 8e       	std	Y+29, r1	; 0x1d
  13e:	1e 8e       	std	Y+30, r1	; 0x1e
  140:	1f 8e       	std	Y+31, r1	; 0x1f
  142:	18 a2       	std	Y+32, r1	; 0x20
-    double gzds = 0;
+		double gzds = 0;
  144:	19 a2       	std	Y+33, r1	; 0x21
  146:	1a a2       	std	Y+34, r1	; 0x22
  148:	1b a2       	std	Y+35, r1	; 0x23
  14a:	1c a2       	std	Y+36, r1	; 0x24
-	#endif
 
+	//loop variable to check how much time the object has been still for
 	int timeCheck = 0;
 
-    //init uart
+    //initialize UART
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE,F_CPU));
  14c:	87 e6       	ldi	r24, 0x67	; 103
  14e:	90 e0       	ldi	r25, 0x00	; 0
  150:	0e 94 70 04 	call	0x8e0	; 0x8e0 <uart_init>
 
-	//init interrupt
-	sei();
+	sei();	//enable global interrupt
  154:	78 94       	sei
 
-	//init mpu6050
+	//initialize mpu6050
 	mpu6050_init();
  156:	0e 94 3b 02 	call	0x476	; 0x476 <mpu6050_init>
 	#else
@@ -248,28 +246,28 @@ int main(void) {
     
     timer1_init();
  16c:	0e 94 3e 00 	call	0x7c	; 0x7c <timer1_init>
-	int still = 0;
+	int still = 0;	//0 if the object is moving, 1 if still
 	
 	
-	USART_Init(9600);						/* initialize USART with 9600 baud rate */
+	USART_Init(9600);	// initialize USART with 9600 baud rate 
  170:	60 e8       	ldi	r22, 0x80	; 128
  172:	75 e2       	ldi	r23, 0x25	; 37
  174:	80 e0       	ldi	r24, 0x00	; 0
  176:	90 e0       	ldi	r25, 0x00	; 0
  178:	0e 94 84 04 	call	0x908	; 0x908 <USART_Init>
-	//init mpu6050
+	//initialize mpu6050
 	mpu6050_init();
 	_delay_ms(50);
     
     timer1_init();
-	int still = 0;
+	int still = 0;	//0 if the object is moving, 1 if still
  17c:	c1 2c       	mov	r12, r1
  17e:	d1 2c       	mov	r13, r1
-    double gxds = 0;
-    double gyds = 0;
-    double gzds = 0;
+		double gyds = 0;
+		double gzds = 0;
 	#endif
 
+	//loop variable to check how much time the object has been still for
 	int timeCheck = 0;
  180:	81 2c       	mov	r8, r1
  182:	91 2c       	mov	r9, r1
@@ -283,7 +281,7 @@ int main(void) {
  186:	b1 2c       	mov	r11, r1
 
 	while(1) {
-        //uart_puts("hello");
+        
 		#if MPU6050_GETATTITUDE == 0
 		
 		mpu6050_getRawData(&ax, &ay, &az, &gx, &gy, &gz);
@@ -322,7 +320,7 @@ int main(void) {
  1c8:	44 97       	sbiw	r24, 0x14	; 20
  1ca:	0e 94 bd 02 	call	0x57a	; 0x57a <mpu6050_getConvData>
         
-		if(gxds < 10 && gyds < 10 && gzds < 10)
+		if(gxds < 10 && gyds < 10 && gzds < 10)		//too little movement
  1ce:	20 e0       	ldi	r18, 0x00	; 0
  1d0:	30 e0       	ldi	r19, 0x00	; 0
  1d2:	40 e2       	ldi	r20, 0x20	; 32
@@ -357,7 +355,7 @@ int main(void) {
  212:	88 23       	and	r24, r24
  214:	d4 f4       	brge	.+52     	; 0x24a <main+0x166>
 		{
-			if(still == 1)
+			if(still == 1)		//object is already in still state
  216:	91 e0       	ldi	r25, 0x01	; 1
  218:	c9 16       	cp	r12, r25
  21a:	d1 04       	cpc	r13, r1
@@ -367,13 +365,13 @@ int main(void) {
  21e:	2f ef       	ldi	r18, 0xFF	; 255
  220:	82 1a       	sub	r8, r18
  222:	92 0a       	sbc	r9, r18
-				if(timeCheck >= 10)
+				if(timeCheck >= 10)		//object has been still for too long
  224:	8a e0       	ldi	r24, 0x0A	; 10
  226:	88 16       	cp	r8, r24
  228:	91 04       	cpc	r9, r1
  22a:	a4 f0       	brlt	.+40     	; 0x254 <main+0x170>
 				{
-					USART_TxChar('1');
+					USART_TxChar('1');	
  22c:	81 e3       	ldi	r24, 0x31	; 49
  22e:	0e 94 b3 04 	call	0x966	; 0x966 <USART_TxChar>
 					timeCheck = 0;
@@ -429,6 +427,12 @@ int main(void) {
  266:	90 cf       	rjmp	.-224    	; 0x188 <main+0xa4>
 
 00000268 <mpu6050_readBytes>:
+	mpu6050_readBits(MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH, (uint8_t *)buffer);
+	if(buffer[0] == 0x34)
+		return 1;
+	else
+		return 0;
+}
  268:	af 92       	push	r10
  26a:	bf 92       	push	r11
  26c:	cf 92       	push	r12
@@ -689,6 +693,12 @@ int main(void) {
  474:	08 95       	ret
 
 00000476 <mpu6050_init>:
+void mpu6050_init() {
+    //timer0_init();
+    //timer1_init();
+	#if MPU6050_I2CINIT == 1
+	//init i2c
+	i2c_init();
  476:	0e 94 8c 03 	call	0x718	; 0x718 <i2c_init>
 	#else
 		//round up by default
@@ -715,6 +725,12 @@ int main(void) {
  48e:	e1 f7       	brne	.-8      	; 0x488 <mpu6050_init+0x12>
  490:	00 c0       	rjmp	.+0      	; 0x492 <mpu6050_init+0x1c>
  492:	00 00       	nop
+
+	//allow mpu6050 chip clocks to start up
+	_delay_ms(100);
+
+	//set sleep disabled
+	mpu6050_setSleepDisabled();
  494:	0e 94 35 02 	call	0x46a	; 0x46a <mpu6050_setSleepDisabled>
  498:	8f e1       	ldi	r24, 0x1F	; 31
  49a:	9e e4       	ldi	r25, 0x4E	; 78
@@ -722,24 +738,38 @@ int main(void) {
  49e:	f1 f7       	brne	.-4      	; 0x49c <mpu6050_init+0x26>
  4a0:	00 c0       	rjmp	.+0      	; 0x4a2 <mpu6050_init+0x2c>
  4a2:	00 00       	nop
+	_delay_ms(10);
+
+	//set clock source
+	//  it is highly recommended that the device be configured to use one of the gyroscopes (or an external clock source)
+	//  as the clock reference for improved stability
+	mpu6050_writeBits(MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH, MPU6050_CLOCK_PLL_XGYRO);
  4a4:	21 e0       	ldi	r18, 0x01	; 1
  4a6:	43 e0       	ldi	r20, 0x03	; 3
  4a8:	62 e0       	ldi	r22, 0x02	; 2
  4aa:	8b e6       	ldi	r24, 0x6B	; 107
  4ac:	0e 94 c0 01 	call	0x380	; 0x380 <mpu6050_writeBits>
+	//set DLPF bandwidth to 42Hz
+	mpu6050_writeBits(MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH, MPU6050_DLPF_BW_42);
  4b0:	23 e0       	ldi	r18, 0x03	; 3
  4b2:	43 e0       	ldi	r20, 0x03	; 3
  4b4:	62 e0       	ldi	r22, 0x02	; 2
  4b6:	8a e1       	ldi	r24, 0x1A	; 26
  4b8:	0e 94 c0 01 	call	0x380	; 0x380 <mpu6050_writeBits>
+    //set sampe rate
+	mpu6050_writeByte(MPU6050_RA_SMPLRT_DIV, 4); //1khz / (1 + 4) = 200Hz
  4bc:	64 e0       	ldi	r22, 0x04	; 4
  4be:	89 e1       	ldi	r24, 0x19	; 25
  4c0:	0e 94 b0 01 	call	0x360	; 0x360 <mpu6050_writeByte>
+	//set gyro range
+	mpu6050_writeBits(MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, MPU6050_GYRO_FS);
  4c4:	23 e0       	ldi	r18, 0x03	; 3
  4c6:	42 e0       	ldi	r20, 0x02	; 2
  4c8:	64 e0       	ldi	r22, 0x04	; 4
  4ca:	8b e1       	ldi	r24, 0x1B	; 27
  4cc:	0e 94 c0 01 	call	0x380	; 0x380 <mpu6050_writeBits>
+	//set accel range
+	mpu6050_writeBits(MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH, MPU6050_ACCEL_FS);
  4d0:	20 e0       	ldi	r18, 0x00	; 0
  4d2:	42 e0       	ldi	r20, 0x02	; 2
  4d4:	64 e0       	ldi	r22, 0x04	; 4
@@ -748,6 +778,12 @@ int main(void) {
  4dc:	08 95       	ret
 
 000004de <mpu6050_getRawData>:
+
+//can not accept many request if we alreay have getattitude requests
+/*
+ * get raw data
+ */
+void mpu6050_getRawData(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz) {
  4de:	8f 92       	push	r8
  4e0:	9f 92       	push	r9
  4e2:	af 92       	push	r10
@@ -764,11 +800,14 @@ int main(void) {
  4f8:	5b 01       	movw	r10, r22
  4fa:	6a 01       	movw	r12, r20
  4fc:	e9 01       	movw	r28, r18
+	mpu6050_readBytes(MPU6050_RA_ACCEL_XOUT_H, 14, (uint8_t *)buffer);
  4fe:	49 ea       	ldi	r20, 0xA9	; 169
  500:	50 e0       	ldi	r21, 0x00	; 0
  502:	6e e0       	ldi	r22, 0x0E	; 14
  504:	8b e3       	ldi	r24, 0x3B	; 59
  506:	0e 94 34 01 	call	0x268	; 0x268 <mpu6050_readBytes>
+
+    *ax = (((int16_t)buffer[0]) << 8) | buffer[1];
  50a:	e9 ea       	ldi	r30, 0xA9	; 169
  50c:	f0 e0       	ldi	r31, 0x00	; 0
  50e:	20 81       	ld	r18, Z
@@ -778,6 +817,7 @@ int main(void) {
  516:	d4 01       	movw	r26, r8
  518:	8d 93       	st	X+, r24
  51a:	9c 93       	st	X, r25
+    *ay = (((int16_t)buffer[2]) << 8) | buffer[3];
  51c:	22 81       	ldd	r18, Z+2	; 0x02
  51e:	83 81       	ldd	r24, Z+3	; 0x03
  520:	90 e0       	ldi	r25, 0x00	; 0
@@ -785,6 +825,7 @@ int main(void) {
  524:	d5 01       	movw	r26, r10
  526:	8d 93       	st	X+, r24
  528:	9c 93       	st	X, r25
+    *az = (((int16_t)buffer[4]) << 8) | buffer[5];
  52a:	24 81       	ldd	r18, Z+4	; 0x04
  52c:	85 81       	ldd	r24, Z+5	; 0x05
  52e:	90 e0       	ldi	r25, 0x00	; 0
@@ -792,12 +833,14 @@ int main(void) {
  532:	d6 01       	movw	r26, r12
  534:	8d 93       	st	X+, r24
  536:	9c 93       	st	X, r25
+    *gx = (((int16_t)buffer[8]) << 8) | buffer[9];
  538:	20 85       	ldd	r18, Z+8	; 0x08
  53a:	81 85       	ldd	r24, Z+9	; 0x09
  53c:	90 e0       	ldi	r25, 0x00	; 0
  53e:	92 2b       	or	r25, r18
  540:	99 83       	std	Y+1, r25	; 0x01
  542:	88 83       	st	Y, r24
+    *gy = (((int16_t)buffer[10]) << 8) | buffer[11];
  544:	22 85       	ldd	r18, Z+10	; 0x0a
  546:	83 85       	ldd	r24, Z+11	; 0x0b
  548:	90 e0       	ldi	r25, 0x00	; 0
@@ -805,6 +848,7 @@ int main(void) {
  54c:	d8 01       	movw	r26, r16
  54e:	8d 93       	st	X+, r24
  550:	9c 93       	st	X, r25
+    *gz = (((int16_t)buffer[12]) << 8) | buffer[13];
  552:	24 85       	ldd	r18, Z+12	; 0x0c
  554:	85 85       	ldd	r24, Z+13	; 0x0d
  556:	90 e0       	ldi	r25, 0x00	; 0
@@ -812,6 +856,12 @@ int main(void) {
  55a:	f7 01       	movw	r30, r14
  55c:	91 83       	std	Z+1, r25	; 0x01
  55e:	80 83       	st	Z, r24
+//    *az = ((((int16_t)buffer[4]) << 8) | buffer[5]) / 16384.0;
+//    *gx = ((((int16_t)buffer[8]) << 8) | buffer[9]) / 16384.0;
+//    *gy = ((((int16_t)buffer[10]) << 8) | buffer[11]) / 16384.0;
+//    *gz = ((((int16_t)buffer[12]) << 8) | buffer[13]) / 16384.0;
+    
+}
  560:	df 91       	pop	r29
  562:	cf 91       	pop	r28
  564:	1f 91       	pop	r17
@@ -827,6 +877,12 @@ int main(void) {
  578:	08 95       	ret
 
 0000057a <mpu6050_getConvData>:
+
+
+/*
+ * get raw data converted to g and deg/sec values
+ */
+void mpu6050_getConvData(double* axg, double* ayg, double* azg, double* gxds, double* gyds, double* gzds) {
  57a:	2f 92       	push	r2
  57c:	3f 92       	push	r3
  57e:	4f 92       	push	r4
@@ -859,18 +915,25 @@ int main(void) {
  5b4:	69 01       	movw	r12, r18
  5b6:	28 01       	movw	r4, r16
  5b8:	17 01       	movw	r2, r14
+	int16_t ax = 0;
  5ba:	1a 82       	std	Y+2, r1	; 0x02
  5bc:	19 82       	std	Y+1, r1	; 0x01
+	int16_t ay = 0;
  5be:	1c 82       	std	Y+4, r1	; 0x04
  5c0:	1b 82       	std	Y+3, r1	; 0x03
+	int16_t az = 0;
  5c2:	1e 82       	std	Y+6, r1	; 0x06
  5c4:	1d 82       	std	Y+5, r1	; 0x05
+	int16_t gx = 0;
  5c6:	18 86       	std	Y+8, r1	; 0x08
  5c8:	1f 82       	std	Y+7, r1	; 0x07
+	int16_t gy = 0;
  5ca:	1a 86       	std	Y+10, r1	; 0x0a
  5cc:	19 86       	std	Y+9, r1	; 0x09
+	int16_t gz = 0;
  5ce:	1c 86       	std	Y+12, r1	; 0x0c
  5d0:	1b 86       	std	Y+11, r1	; 0x0b
+	mpu6050_getRawData(&ax, &ay, &az, &gx, &gy, &gz);
  5d2:	ce 01       	movw	r24, r28
  5d4:	0b 96       	adiw	r24, 0x0b	; 11
  5d6:	7c 01       	movw	r14, r24
@@ -888,6 +951,9 @@ int main(void) {
  5ee:	7f 4f       	sbci	r23, 0xFF	; 255
  5f0:	0a 97       	sbiw	r24, 0x0a	; 10
  5f2:	0e 94 6f 02 	call	0x4de	; 0x4de <mpu6050_getRawData>
+
+	#if MPU6050_CALIBRATEDACCGYRO == 1
+    *axg = (double)(ax-MPU6050_AXOFFSET)/MPU6050_AXGAIN;
  5f6:	69 81       	ldd	r22, Y+1	; 0x01
  5f8:	7a 81       	ldd	r23, Y+2	; 0x02
  5fa:	07 2e       	mov	r0, r23
@@ -905,6 +971,7 @@ int main(void) {
  616:	71 83       	std	Z+1, r23	; 0x01
  618:	82 83       	std	Z+2, r24	; 0x02
  61a:	93 83       	std	Z+3, r25	; 0x03
+    *ayg = (double)(ay-MPU6050_AYOFFSET)/MPU6050_AYGAIN;
  61c:	6b 81       	ldd	r22, Y+3	; 0x03
  61e:	7c 81       	ldd	r23, Y+4	; 0x04
  620:	07 2e       	mov	r0, r23
@@ -922,6 +989,7 @@ int main(void) {
  63c:	71 83       	std	Z+1, r23	; 0x01
  63e:	82 83       	std	Z+2, r24	; 0x02
  640:	93 83       	std	Z+3, r25	; 0x03
+    *azg = (double)(az-MPU6050_AZOFFSET)/MPU6050_AZGAIN;
  642:	6d 81       	ldd	r22, Y+5	; 0x05
  644:	7e 81       	ldd	r23, Y+6	; 0x06
  646:	07 2e       	mov	r0, r23
@@ -939,6 +1007,7 @@ int main(void) {
  662:	71 83       	std	Z+1, r23	; 0x01
  664:	82 83       	std	Z+2, r24	; 0x02
  666:	93 83       	std	Z+3, r25	; 0x03
+    *gxds = (double)(gx-MPU6050_GXOFFSET)/MPU6050_GXGAIN;
  668:	6f 81       	ldd	r22, Y+7	; 0x07
  66a:	78 85       	ldd	r23, Y+8	; 0x08
  66c:	66 5d       	subi	r22, 0xD6	; 214
@@ -958,6 +1027,7 @@ int main(void) {
  68c:	71 83       	std	Z+1, r23	; 0x01
  68e:	82 83       	std	Z+2, r24	; 0x02
  690:	93 83       	std	Z+3, r25	; 0x03
+	*gyds = (double)(gy-MPU6050_GYOFFSET)/MPU6050_GYGAIN;
  692:	69 85       	ldd	r22, Y+9	; 0x09
  694:	7a 85       	ldd	r23, Y+10	; 0x0a
  696:	69 50       	subi	r22, 0x09	; 9
@@ -977,6 +1047,7 @@ int main(void) {
  6b6:	71 83       	std	Z+1, r23	; 0x01
  6b8:	82 83       	std	Z+2, r24	; 0x02
  6ba:	93 83       	std	Z+3, r25	; 0x03
+	*gzds = (double)(gz-MPU6050_GZOFFSET)/MPU6050_GZGAIN;
  6bc:	6b 85       	ldd	r22, Y+11	; 0x0b
  6be:	7c 85       	ldd	r23, Y+12	; 0x0c
  6c0:	63 5e       	subi	r22, 0xE3	; 227
@@ -996,6 +1067,12 @@ int main(void) {
  6e0:	71 83       	std	Z+1, r23	; 0x01
  6e2:	82 83       	std	Z+2, r24	; 0x02
  6e4:	93 83       	std	Z+3, r25	; 0x03
+    *azg = (double)(az)/MPU6050_AGAIN;
+    *gxds = (double)(gx)/MPU6050_GGAIN;
+	*gyds = (double)(gy)/MPU6050_GGAIN;
+	*gzds = (double)(gz)/MPU6050_GGAIN;
+	#endif
+}
  6e6:	2c 96       	adiw	r28, 0x0c	; 12
  6e8:	0f b6       	in	r0, 0x3f	; 63
  6ea:	f8 94       	cli
@@ -1023,6 +1100,12 @@ int main(void) {
  716:	08 95       	ret
 
 00000718 <i2c_init>:
+*************************************************************************/
+unsigned char i2c_rep_start(unsigned char address)
+{
+    return i2c_start( address );
+
+}/* i2c_rep_start */
  718:	11 b8       	out	0x01, r1	; 1
  71a:	80 e2       	ldi	r24, 0x20	; 32
  71c:	80 b9       	out	0x00, r24	; 0
@@ -1092,8 +1175,18 @@ int main(void) {
  798:	08 95       	ret
 
 0000079a <i2c_stop>:
+void i2c_stop(void)
+{
+	uint32_t  i2c_timer = 0;
+
+    /* send stop condition */
+	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);
  79a:	84 e9       	ldi	r24, 0x94	; 148
  79c:	86 bf       	out	0x36, r24	; 54
+	
+	// wait until stop condition is executed and bus released
+	i2c_timer = I2C_TIMER_DELAY;
+	while((TWCR & (1<<TWSTO)) && i2c_timer--);
  79e:	80 e0       	ldi	r24, 0x00	; 0
  7a0:	90 e0       	ldi	r25, 0x00	; 0
  7a2:	06 b6       	in	r0, 0x36	; 54
@@ -1107,13 +1200,24 @@ int main(void) {
  7b2:	08 95       	ret
 
 000007b4 <i2c_write>:
+{	
+	uint32_t  i2c_timer = 0;
+    uint8_t   twst;
+    
+	// send data to the previously addressed device
+	TWDR = data;
  7b4:	83 b9       	out	0x03, r24	; 3
+	TWCR = (1<<TWINT) | (1<<TWEN);
  7b6:	84 e8       	ldi	r24, 0x84	; 132
  7b8:	86 bf       	out	0x36, r24	; 54
+
+	// wait until transmission completed
+	i2c_timer = I2C_TIMER_DELAY;
  7ba:	8f ef       	ldi	r24, 0xFF	; 255
  7bc:	90 e0       	ldi	r25, 0x00	; 0
  7be:	a0 e0       	ldi	r26, 0x00	; 0
  7c0:	b0 e0       	ldi	r27, 0x00	; 0
+	while(!(TWCR & (1<<TWINT)) && i2c_timer--);
  7c2:	06 b6       	in	r0, 0x36	; 54
  7c4:	07 fc       	sbrc	r0, 7
  7c6:	05 c0       	rjmp	.+10     	; 0x7d2 <i2c_write+0x1e>
@@ -1122,11 +1226,22 @@ int main(void) {
  7cc:	b1 09       	sbc	r27, r1
  7ce:	c8 f7       	brcc	.-14     	; 0x7c2 <i2c_write+0xe>
  7d0:	04 c0       	rjmp	.+8      	; 0x7da <i2c_write+0x26>
+	if(i2c_timer == 0)
  7d2:	89 2b       	or	r24, r25
  7d4:	8a 2b       	or	r24, r26
  7d6:	8b 2b       	or	r24, r27
  7d8:	39 f0       	breq	.+14     	; 0x7e8 <i2c_write+0x34>
+		return 1;
+
+	// check value of TWI Status Register. Mask prescaler bits
+	twst = TW_STATUS & 0xF8;
  7da:	91 b1       	in	r25, 0x01	; 1
+
+	// wait until transmission completed
+	i2c_timer = I2C_TIMER_DELAY;
+	while(!(TWCR & (1<<TWINT)) && i2c_timer--);
+	if(i2c_timer == 0)
+		return 1;
  7dc:	98 7f       	andi	r25, 0xF8	; 248
  7de:	81 e0       	ldi	r24, 0x01	; 1
  7e0:	98 32       	cpi	r25, 0x28	; 40
@@ -1134,15 +1249,29 @@ int main(void) {
  7e4:	80 e0       	ldi	r24, 0x00	; 0
  7e6:	08 95       	ret
  7e8:	81 e0       	ldi	r24, 0x01	; 1
+	// check value of TWI Status Register. Mask prescaler bits
+	twst = TW_STATUS & 0xF8;
+	if( twst != TW_MT_DATA_ACK) return 1;
+	return 0;
+
+}/* i2c_write */
  7ea:	08 95       	ret
 
 000007ec <i2c_readAck>:
+*************************************************************************/
+unsigned char i2c_readAck(void)
+{
+	uint32_t  i2c_timer = 0;
+
+	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);
  7ec:	84 ec       	ldi	r24, 0xC4	; 196
  7ee:	86 bf       	out	0x36, r24	; 54
+	i2c_timer = I2C_TIMER_DELAY;
  7f0:	8f ef       	ldi	r24, 0xFF	; 255
  7f2:	90 e0       	ldi	r25, 0x00	; 0
  7f4:	a0 e0       	ldi	r26, 0x00	; 0
  7f6:	b0 e0       	ldi	r27, 0x00	; 0
+	while(!(TWCR & (1<<TWINT)) && i2c_timer--);
  7f8:	06 b6       	in	r0, 0x36	; 54
  7fa:	07 fc       	sbrc	r0, 7
  7fc:	05 c0       	rjmp	.+10     	; 0x808 <i2c_readAck+0x1c>
@@ -1151,22 +1280,44 @@ int main(void) {
  802:	b1 09       	sbc	r27, r1
  804:	c8 f7       	brcc	.-14     	; 0x7f8 <i2c_readAck+0xc>
  806:	04 c0       	rjmp	.+8      	; 0x810 <i2c_readAck+0x24>
+	if(i2c_timer == 0)
  808:	89 2b       	or	r24, r25
  80a:	8a 2b       	or	r24, r26
  80c:	8b 2b       	or	r24, r27
  80e:	11 f0       	breq	.+4      	; 0x814 <i2c_readAck+0x28>
+		return 0;
+
+    return TWDR;
  810:	83 b1       	in	r24, 0x03	; 3
  812:	08 95       	ret
+
+	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);
+	i2c_timer = I2C_TIMER_DELAY;
+	while(!(TWCR & (1<<TWINT)) && i2c_timer--);
+	if(i2c_timer == 0)
+		return 0;
  814:	80 e0       	ldi	r24, 0x00	; 0
+
+    return TWDR;
+
+}/* i2c_readAck */
  816:	08 95       	ret
 
 00000818 <i2c_readNak>:
+*************************************************************************/
+unsigned char i2c_readNak(void)
+{
+	uint32_t  i2c_timer = 0;
+
+	TWCR = (1<<TWINT) | (1<<TWEN);
  818:	84 e8       	ldi	r24, 0x84	; 132
  81a:	86 bf       	out	0x36, r24	; 54
+	i2c_timer = I2C_TIMER_DELAY;
  81c:	8f ef       	ldi	r24, 0xFF	; 255
  81e:	90 e0       	ldi	r25, 0x00	; 0
  820:	a0 e0       	ldi	r26, 0x00	; 0
  822:	b0 e0       	ldi	r27, 0x00	; 0
+	while(!(TWCR & (1<<TWINT)) && i2c_timer--);
  824:	06 b6       	in	r0, 0x36	; 54
  826:	07 fc       	sbrc	r0, 7
  828:	05 c0       	rjmp	.+10     	; 0x834 <i2c_readNak+0x1c>
@@ -1175,16 +1326,36 @@ int main(void) {
  82e:	b1 09       	sbc	r27, r1
  830:	c8 f7       	brcc	.-14     	; 0x824 <i2c_readNak+0xc>
  832:	04 c0       	rjmp	.+8      	; 0x83c <i2c_readNak+0x24>
+	if(i2c_timer == 0)
  834:	89 2b       	or	r24, r25
  836:	8a 2b       	or	r24, r26
  838:	8b 2b       	or	r24, r27
  83a:	11 f0       	breq	.+4      	; 0x840 <i2c_readNak+0x28>
+		return 0;
+	
+    return TWDR;
  83c:	83 b1       	in	r24, 0x03	; 3
  83e:	08 95       	ret
+
+	TWCR = (1<<TWINT) | (1<<TWEN);
+	i2c_timer = I2C_TIMER_DELAY;
+	while(!(TWCR & (1<<TWINT)) && i2c_timer--);
+	if(i2c_timer == 0)
+		return 0;
  840:	80 e0       	ldi	r24, 0x00	; 0
+	
+    return TWDR;
+
+}/* i2c_readNak */
  842:	08 95       	ret
 
 00000844 <__vector_13>:
+ISR(UART0_RECEIVE_INTERRUPT)
+/*************************************************************************
+Function: UART Receive Complete interrupt
+Purpose:  called when the UART has received a character
+**************************************************************************/
+{
  844:	1f 92       	push	r1
  846:	0f 92       	push	r0
  848:	0f b6       	in	r0, 0x3f	; 63
@@ -1195,23 +1366,64 @@ int main(void) {
  852:	9f 93       	push	r25
  854:	ef 93       	push	r30
  856:	ff 93       	push	r31
+    unsigned char usr;
+    unsigned char lastRxError;
+ 
+ 
+    /* read UART status register and UART data register */ 
+    usr  = UART0_STATUS;
  858:	8b b1       	in	r24, 0x0b	; 11
+    data = UART0_DATA;
  85a:	2c b1       	in	r18, 0x0c	; 12
+    
+    /* */
+#if defined( AT90_UART )
+    lastRxError = (usr & (_BV(FE)|_BV(DOR)) );
+#elif defined( ATMEGA_USART )
+    lastRxError = (usr & (_BV(FE)|_BV(DOR)) );
  85c:	88 71       	andi	r24, 0x18	; 24
+#elif defined ( ATMEGA_UART )
+    lastRxError = (usr & (_BV(FE)|_BV(DOR)) );
+#endif
+        
+    /* calculate buffer index */ 
+    tmphead = ( UART_RxHead + 1) & UART_RX_BUFFER_MASK;
  85e:	e0 91 62 00 	lds	r30, 0x0062	; 0x800062 <UART_RxHead>
  862:	ef 5f       	subi	r30, 0xFF	; 255
  864:	ef 71       	andi	r30, 0x1F	; 31
+    
+    if ( tmphead == UART_RxTail ) {
  866:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <UART_RxTail>
  86a:	e9 17       	cp	r30, r25
  86c:	39 f0       	breq	.+14     	; 0x87c <__stack+0x1d>
+        /* error: receive buffer overflow */
+        lastRxError = UART_BUFFER_OVERFLOW >> 8;
+    }else{
+        /* store new index */
+        UART_RxHead = tmphead;
  86e:	e0 93 62 00 	sts	0x0062, r30	; 0x800062 <UART_RxHead>
+        /* store received data in buffer */
+        UART_RxBuf[tmphead] = data;
  872:	f0 e0       	ldi	r31, 0x00	; 0
  874:	eb 59       	subi	r30, 0x9B	; 155
  876:	ff 4f       	sbci	r31, 0xFF	; 255
  878:	20 83       	st	Z, r18
  87a:	01 c0       	rjmp	.+2      	; 0x87e <__stack+0x1f>
+    /* calculate buffer index */ 
+    tmphead = ( UART_RxHead + 1) & UART_RX_BUFFER_MASK;
+    
+    if ( tmphead == UART_RxTail ) {
+        /* error: receive buffer overflow */
+        lastRxError = UART_BUFFER_OVERFLOW >> 8;
  87c:	82 e0       	ldi	r24, 0x02	; 2
+        /* store new index */
+        UART_RxHead = tmphead;
+        /* store received data in buffer */
+        UART_RxBuf[tmphead] = data;
+    }
+    UART_LastRxError = lastRxError;   
  87e:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+}
  882:	ff 91       	pop	r31
  884:	ef 91       	pop	r30
  886:	9f 91       	pop	r25
@@ -1224,6 +1436,12 @@ int main(void) {
  894:	18 95       	reti
 
 00000896 <__vector_14>:
+ISR(UART0_TRANSMIT_INTERRUPT)
+/*************************************************************************
+Function: UART Data Register Empty interrupt
+Purpose:  called when the UART is ready to transmit the next byte
+**************************************************************************/
+{
  896:	1f 92       	push	r1
  898:	0f 92       	push	r0
  89a:	0f b6       	in	r0, 0x3f	; 63
@@ -1233,21 +1451,35 @@ int main(void) {
  8a2:	9f 93       	push	r25
  8a4:	ef 93       	push	r30
  8a6:	ff 93       	push	r31
+    unsigned char tmptail;
+
+    
+    if ( UART_TxHead != UART_TxTail) {
  8a8:	90 91 64 00 	lds	r25, 0x0064	; 0x800064 <UART_TxHead>
  8ac:	80 91 63 00 	lds	r24, 0x0063	; 0x800063 <UART_TxTail>
  8b0:	98 17       	cp	r25, r24
  8b2:	61 f0       	breq	.+24     	; 0x8cc <__vector_14+0x36>
+        /* calculate and store new buffer index */
+        tmptail = (UART_TxTail + 1) & UART_TX_BUFFER_MASK;
  8b4:	e0 91 63 00 	lds	r30, 0x0063	; 0x800063 <UART_TxTail>
  8b8:	ef 5f       	subi	r30, 0xFF	; 255
  8ba:	ef 71       	andi	r30, 0x1F	; 31
+        UART_TxTail = tmptail;
  8bc:	e0 93 63 00 	sts	0x0063, r30	; 0x800063 <UART_TxTail>
+        /* get one byte from buffer and write it to UART */
+        UART0_DATA = UART_TxBuf[tmptail];  /* start transmission */
  8c0:	f0 e0       	ldi	r31, 0x00	; 0
  8c2:	eb 57       	subi	r30, 0x7B	; 123
  8c4:	ff 4f       	sbci	r31, 0xFF	; 255
  8c6:	80 81       	ld	r24, Z
  8c8:	8c b9       	out	0x0c, r24	; 12
  8ca:	01 c0       	rjmp	.+2      	; 0x8ce <__vector_14+0x38>
+    }else{
+        /* tx buffer empty, disable UDRE interrupt */
+        UART0_CONTROL &= ~_BV(UART0_UDRIE);
  8cc:	55 98       	cbi	0x0a, 5	; 10
+    }
+}
  8ce:	ff 91       	pop	r31
  8d0:	ef 91       	pop	r30
  8d2:	9f 91       	pop	r25
@@ -1259,24 +1491,58 @@ int main(void) {
  8de:	18 95       	reti
 
 000008e0 <uart_init>:
+Input:    baudrate using macro UART_BAUD_SELECT()
+Returns:  none
+**************************************************************************/
+void uart_init(unsigned int baudrate)
+{
+    UART_TxHead = 0;
  8e0:	10 92 64 00 	sts	0x0064, r1	; 0x800064 <UART_TxHead>
+    UART_TxTail = 0;
  8e4:	10 92 63 00 	sts	0x0063, r1	; 0x800063 <UART_TxTail>
+    UART_RxHead = 0;
  8e8:	10 92 62 00 	sts	0x0062, r1	; 0x800062 <UART_RxHead>
+    UART_RxTail = 0;
  8ec:	10 92 61 00 	sts	0x0061, r1	; 0x800061 <UART_RxTail>
+    /* enable UART receiver and transmmitter and receive complete interrupt */
+    UART0_CONTROL = _BV(RXCIE)|_BV(RXEN)|_BV(TXEN);
+
+#elif defined (ATMEGA_USART)
+    /* Set baud rate */
+    if ( baudrate & 0x8000 )
  8f0:	99 23       	and	r25, r25
  8f2:	1c f4       	brge	.+6      	; 0x8fa <uart_init+0x1a>
+    {
+    	 UART0_STATUS = (1<<U2X);  //Enable 2x speed 
  8f4:	22 e0       	ldi	r18, 0x02	; 2
  8f6:	2b b9       	out	0x0b, r18	; 11
+    	 baudrate &= ~0x8000;
  8f8:	9f 77       	andi	r25, 0x7F	; 127
+    }
+    UBRRH = (unsigned char)(baudrate>>8);
  8fa:	90 bd       	out	0x20, r25	; 32
+    UBRRL = (unsigned char) baudrate;
  8fc:	89 b9       	out	0x09, r24	; 9
+   
+    /* Enable USART receiver and transmitter and receive complete interrupt */
+    UART0_CONTROL = _BV(RXCIE)|(1<<RXEN)|(1<<TXEN);
  8fe:	88 e9       	ldi	r24, 0x98	; 152
  900:	8a b9       	out	0x0a, r24	; 10
+    
+    /* Set frame format: asynchronous, 8data, no parity, 1stop bit */
+    #ifdef URSEL
+    UCSRC = (1<<URSEL)|(3<<UCSZ0);
  902:	86 e8       	ldi	r24, 0x86	; 134
  904:	80 bd       	out	0x20, r24	; 32
  906:	08 95       	ret
 
 00000908 <USART_Init>:
+
+char USART_RxChar()									/* Data receiving function */
+{
+	while (!(UCSRA & (1 << RXC)));					/* Wait until new data receive */
+	return(UDR);									/* Get and return received data */ 
+}
  908:	1b b8       	out	0x0b, r1	; 11
  90a:	2a b1       	in	r18, 0x0a	; 10
  90c:	28 61       	ori	r18, 0x18	; 24
@@ -1325,9 +1591,15 @@ int main(void) {
  964:	08 95       	ret
 
 00000966 <USART_TxChar>:
+
+void USART_TxChar(char data)						/* Data transmitting function */
+{
+	UDR = data;										/* Write data to be transmitting in UDR */
  966:	8c b9       	out	0x0c, r24	; 12
+	while (!(UCSRA & (1<<UDRE)));					/* Wait until data transmit and buffer get empty */
  968:	5d 9b       	sbis	0x0b, 5	; 11
  96a:	fe cf       	rjmp	.-4      	; 0x968 <USART_TxChar+0x2>
+}
  96c:	08 95       	ret
 
 0000096e <__cmpsf2>:

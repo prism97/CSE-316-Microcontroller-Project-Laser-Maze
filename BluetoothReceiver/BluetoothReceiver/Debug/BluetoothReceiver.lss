@@ -17,15 +17,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_abbrev 00000686  00000000  00000000  000009e7  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000003ae  00000000  00000000  0000106d  2**0
+  7 .debug_line   00000372  00000000  00000000  0000106d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000084  00000000  00000000  0000141c  2**2
+  8 .debug_frame  00000084  00000000  00000000  000013e0  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003b6  00000000  00000000  000014a0  2**0
+  9 .debug_str    000003ac  00000000  00000000  00001464  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000ed  00000000  00000000  00001856  2**0
+ 10 .debug_loc    000000ed  00000000  00000000  00001810  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000038  00000000  00000000  00001943  2**0
+ 11 .debug_ranges 00000038  00000000  00000000  000018fd  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -67,17 +67,17 @@ Disassembly of section .text:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000006c <main>:
-//#define LED PORTB					/* connected LED on PORT pin */
+
 
 int main(void)
 {
 	char Data_in;
-    DDRB = 0xFF;							/* make PORT as output port */
+    DDRB = 0xFF;		//make PORT as output port 
   6c:	8f ef       	ldi	r24, 0xFF	; 255
   6e:	87 bb       	out	0x17, r24	; 23
 	PORTB = 0x00;
   70:	18 ba       	out	0x18, r1	; 24
-	USART_Init(9600);						/* initialize USART with 9600 baud rate */
+	USART_Init(9600);	//initialize USART with 9600 baud rate 
   72:	60 e8       	ldi	r22, 0x80	; 128
   74:	75 e2       	ldi	r23, 0x25	; 37
   76:	80 e0       	ldi	r24, 0x00	; 0
@@ -85,28 +85,27 @@ int main(void)
   7a:	0e 94 54 00 	call	0xa8	; 0xa8 <USART_Init>
 	{
 		PORTB = 0x00;
-		Data_in = USART_RxChar();						/* receive data from Bluetooth device*/
-		if(Data_in =='1')
+		Data_in = USART_RxChar();	//receive data from BlueTooth device
+		if(Data_in =='1')	//object still for too long
 		{
-			PORTB = 0xFF;
+			PORTB = 0xFF;	//send signal for interrupt
   7e:	cf ef       	ldi	r28, 0xFF	; 255
-	USART_Init(9600);						/* initialize USART with 9600 baud rate */
-	//LED = 0;
+	PORTB = 0x00;
+	USART_Init(9600);	//initialize USART with 9600 baud rate 
 	
 	while(1)
 	{
 		PORTB = 0x00;
   80:	18 ba       	out	0x18, r1	; 24
-		Data_in = USART_RxChar();						/* receive data from Bluetooth device*/
+		Data_in = USART_RxChar();	//receive data from BlueTooth device
   82:	0e 94 83 00 	call	0x106	; 0x106 <USART_RxChar>
-		if(Data_in =='1')
+		if(Data_in =='1')	//object still for too long
   86:	81 33       	cpi	r24, 0x31	; 49
   88:	11 f4       	brne	.+4      	; 0x8e <main+0x22>
 		{
-			PORTB = 0xFF;
+			PORTB = 0xFF;	//send signal for interrupt
   8a:	c8 bb       	out	0x18, r28	; 24
   8c:	03 c0       	rjmp	.+6      	; 0x94 <main+0x28>
-			//LED |= (1<<PB0);							/* Turn ON LED */	
 		}
 		else if(Data_in =='0')
   8e:	80 33       	cpi	r24, 0x30	; 48
